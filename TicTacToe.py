@@ -3,11 +3,13 @@
 
 from random import choice
 from random import random
+from buildDictionary import GetPermutations
 
 # initialisation
 game_over = False
 available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 selected =  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+game = []
 
 def printBoard(board):
     print()
@@ -24,6 +26,7 @@ def playHuman():
 
     while select not in available:
         select = input('Choose a square... ')
+    game.append(select)
     available.remove(select)
 
     selected[int(select)-1] = HUMAN
@@ -40,6 +43,7 @@ def playComputer():
     input('Press Enter key for COMPUTER to take turn...')
     #get a random square from avaialable
     select = choice(available)
+    game.append(select)
     available.remove(select)
 
     selected[int(select)-1] = COMPUTER
@@ -105,6 +109,7 @@ while not game_over:
         print('It is a draw')
         game_over = True
 
+print(game)
 print('Thanks for playing - try again!')
 #input('press Enter key to exit')
 exit()

@@ -2,9 +2,9 @@
 # 'Permutate' function takes 2 lists: stems and leaves, and add each leaf to each stem
 
 
-permutations = {}                   # this is the main dictionary that will be built up
+
 #refNumbers = ['1', '2', '3', '4', '5', '6', '7', '8']   # no need for '9' as there is no choice to be made since only one square left
-refNumbers = ['1', '2', '3', '4'] 
+refNumbers = ['1', '2', '3'] 
 
 
 def Permutate(stems, leaves):
@@ -30,19 +30,29 @@ def Permutate(stems, leaves):
     return permList
 
 
+def GetPermutations():
+    permutations = {}                   # this is the main dictionary that will be built up
+    myStems = ['']          # initial condition for stems
 
-myStems = ['']          # initial condition for stems
+    for move in refNumbers:
+        myStems = Permutate(myStems, refNumbers)
+        permutations[move] = dict.fromkeys(myStems, 0)
 
-for move in refNumbers:
-    myStems = Permutate(myStems, refNumbers)
-    permutations[move] = dict.fromkeys(myStems, 0)
+    return permutations
 
-print('perms = ',permutations)
 
-print()
-print('length of dictionary is ',sum(len(v) for v in permutations.values()))
+def main():
+    
+    myPermDictionary = GetPermutations()
 
-exit()
+    print('perms = ',myPermDictionary)
+
+    print()
+    print('length of dictionary is ',sum(len(v) for v in myPermDictionary.values()))
+
+
+if __name__ == "__main__":
+    main()
 
 
 
