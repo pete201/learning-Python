@@ -3,13 +3,16 @@
 
 from random import choice
 from random import random
+from tkinter import Y
 from buildDictionary import GetPermutations
 
 # initialisation
 game_over = False
 available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 selected =  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-game = []
+gameMoves = []                               # remembers move sequence of the game
+winner = False
+permDictionary = GetPermutations()      # dictionary for saving moves for AI 
 
 def printBoard(board):
     print()
@@ -26,7 +29,7 @@ def playHuman():
 
     while select not in available:
         select = input('Choose a square... ')
-    game.append(select)
+    gameMoves.append(select)
     available.remove(select)
 
     selected[int(select)-1] = HUMAN
@@ -43,7 +46,7 @@ def playComputer():
     input('Press Enter key for COMPUTER to take turn...')
     #get a random square from avaialable
     select = choice(available)
-    game.append(select)
+    gameMoves.append(select)
     available.remove(select)
 
     selected[int(select)-1] = COMPUTER
@@ -76,6 +79,12 @@ def checkWinner():
 
     return win    
 
+def LearnMoves(moveList):
+    '''input moveList, fill in AI dictionary based on winning moves'''
+    print('PopulateDictionary: ', moveList)
+    print(permDictionary)
+
+
 
 # main 
 goFirst = input("Do you want to go first? (Y/N) ")
@@ -95,6 +104,7 @@ while not game_over:
         game_over = playHuman()
         if  game_over:
             print(f"\nPlayer {player} won")
+            winner = True
             break
         else:
             player = 'COMPUTER'
@@ -102,14 +112,20 @@ while not game_over:
         game_over = playComputer()
         if  game_over:
             print(f"\nPlayer {player} won")
+            winner = True
             break
         else:
             player = 'HUMAN'
     if len(available) < 1:
         print('It is a draw')
+        winner = False
         game_over = True
 
-print(game)
+if winner:
+    LearnMoves(gameMoves)
+print()
 print('Thanks for playing - try again!')
 #input('press Enter key to exit')
 exit()
+
+

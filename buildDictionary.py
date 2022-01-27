@@ -3,10 +3,6 @@
 
 
 
-#refNumbers = ['1', '2', '3', '4', '5', '6', '7', '8']   # no need for '9' as there is no choice to be made since only one square left
-refNumbers = ['1', '2', '3'] 
-
-
 def Permutate(stems, leaves):
     '''takes 2 strings; stem and leaves, and returns permutations by adding each leaf to each stem'''
     
@@ -32,10 +28,12 @@ def Permutate(stems, leaves):
 
 def GetPermutations():
     permutations = {}                   # this is the main dictionary that will be built up
+    #ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8']   # no need for '9' as there is no choice to be made since only one square left
+    ticTacToeGrid = ['1', '2', '3']  # small list for testing only
     myStems = ['']          # initial condition for stems
 
-    for move in refNumbers:
-        myStems = Permutate(myStems, refNumbers)
+    for move in ticTacToeGrid:
+        myStems = Permutate(myStems, ticTacToeGrid)
         permutations[move] = dict.fromkeys(myStems, 0)
 
     return permutations
@@ -48,7 +46,7 @@ def main():
     print('perms = ',myPermDictionary)
 
     print()
-    print('length of dictionary is ',sum(len(v) for v in myPermDictionary.values()))
+    print('length of dictionary is:',sum(len(v) for v in myPermDictionary.values()))
 
 
 if __name__ == "__main__":
