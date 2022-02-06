@@ -4,15 +4,14 @@
 from random import choice
 from random import random
 from tkinter import Y
-from buildDictionary import GetPermutations
+from Brain_class import Brain 
 
 # initialisation
-game_over = False
 available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
 selected =  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-gameMoves = []                               # remembers move sequence of the game
+gameMoves = []                              # remembers move sequence of the game
 winner = False
-permDictionary = GetPermutations()      # dictionary for saving moves for AI 
+p1 = Brain('player1')                       # set up a player p1 for AI, nicname (filename)= 'player1'
 
 def printBoard(board):
     print()
@@ -23,7 +22,7 @@ def printBoard(board):
     print(f'{board[6]} | {board[7]} | {board[8]} \n')
 
 
-def playHuman():
+def playHuman(HUMAN):
     select = ''
     checkWin = False
 
@@ -39,7 +38,7 @@ def playHuman():
     return checkWin
 
 
-def playComputer():
+def playComputer(COMPUTER):
     select = ''
     checkWin = False
     
@@ -79,53 +78,50 @@ def checkWinner():
 
     return win    
 
-def LearnMoves(moveList):
-    '''input moveList, fill in AI dictionary based on winning moves'''
-    print('PopulateDictionary: ', moveList)
-    print(permDictionary)
 
 
-
-# main 
-goFirst = input("Do you want to go first? (Y/N) ")
-if goFirst.capitalize() == 'Y':
-    HUMAN = 'O'
-    COMPUTER = 'X'
-    player = 'HUMAN'
-else:
-    HUMAN = 'X'
-    COMPUTER = 'O'
-    player = 'COMPUTER'
-
-printBoard(available)
-
-while not game_over:
-    if player == 'HUMAN':
-        game_over = playHuman()
-        if  game_over:
-            print(f"\nPlayer {player} won")
-            winner = True
-            break
-        else:
-            player = 'COMPUTER'
+def main():
+    game_over = False
+    goFirst = input("Do you want to go first? (Y/N) ")
+    if goFirst.capitalize() == 'Y':
+        HUMAN = 'O'
+        COMPUTER = 'X'
+        player = 'HUMAN'
     else:
-        game_over = playComputer()
-        if  game_over:
-            print(f"\nPlayer {player} won")
-            winner = True
-            break
+        HUMAN = 'X'
+        COMPUTER = 'O'
+        player = 'COMPUTER'
+
+    printBoard(available)
+
+    while not game_over:
+        if player == 'HUMAN':
+            game_over = playHuman(HUMAN)
+            if  game_over:
+                print(f"\nPlayer {player} won")
+                winner = True
+                break
+            else:
+                player = 'COMPUTER'
         else:
-            player = 'HUMAN'
-    if len(available) < 1:
-        print('It is a draw')
-        winner = False
-        game_over = True
+            game_over = playComputer(COMPUTER)
+            if  game_over:
+                print(f"\nPlayer {player} won")
+                winner = True
+                break
+            else:
+                player = 'HUMAN'
+        if len(available) < 1:
+            print('It is a draw')
+            winner = False
+            game_over = True
 
-if winner:
-    LearnMoves(gameMoves)
-print()
-print('Thanks for playing - try again!')
-#input('press Enter key to exit')
-exit()
+    if winner:
+        p1.LearnMoves(gameMoves)
+    print()
+    print('Thanks for playing - try again!')
+    #input('press Enter key to exit')
+    exit()
 
-
+if __name__ == "__main__":
+    main()
