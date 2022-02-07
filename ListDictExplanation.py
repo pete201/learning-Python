@@ -1,14 +1,12 @@
 d = [
     # move 0: no prior moves
-    {
-        '1': 1, "2": 2, "3": 3, "4": 4
-    },
+    {'1': 1, "2": 2, "3": 3, "4": 4},
     # move 1; index [1]['tile'] for all possibilities. index [1]['tile']['tile'] for one specific value
     {
         '1': {"2": 12, "3": 13, "4": 14},
-        '2': {"1": 0, "3": 0, "4": 0},
-        '3': {"1": 0, "2": 0, "4": 0},
-        '4': {"1": 0, "2": 0, "3": 0}
+        '2': {"1": 21, "3": 23, "4": 24},
+        '3': {"1": 31, "2": 32, "4": 34},
+        '4': {"1": 41, "2": 42, "3": 43}
     },
     # move 2; index [2]['tile']['tile'] for all possibilities. index [1]['tile']['tile']['tile'] for one specific value
     {
