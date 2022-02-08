@@ -1,4 +1,4 @@
-GRID = ['1', '2', '3', '4']
+
 
 
 def BuildNestedDict(input_dict):
@@ -8,11 +8,8 @@ def BuildNestedDict(input_dict):
         #print('BuildNestedDict: type(element)', type(input_value))
         if type(input_value) is dict:   # if it's a nested dictionary, then recursive call.  If not, then we work on input dictionary
             #print('BuildNestedDict: recursivne call----------------------------------------')
-            returnValue = BuildNestedDict(input_value)
-            #print('BuildNestedDict: itteration return value:', returnValue)
+            returnDict[input_key] = BuildNestedDict(input_value)
             #print('BuildNestedDict: and mykey:', input_key)
-            #innerDict['1'].update(BuildNestedDict(value))
-            returnDict[input_key] = returnValue
             #print('BuildNestedDict: returnDict so far...', returnDict)
         else:
             # we get here if type NOT dictionary
@@ -23,20 +20,20 @@ def BuildNestedDict(input_dict):
                 shortList.remove(key)
                 returnDict[key] = dict.fromkeys(shortList,0) 
 
-    print('BuildNestedDict: returnDict:', returnDict)
+    #print('BuildNestedDict: returnDict:', returnDict)
     return returnDict
 
 
 def main():
     ''''''
-  
-    # # first establish List with initial dictionary from Grid (i.e. the suggestion values for first move)
+    GRID = ['1', '2', '3', '4', '5']
+    # first establish List with initial dictionary from Grid (i.e. the suggestion values for first move)
     ListDics = [dict.fromkeys(GRID,0)]
 
-    #now pass this dictionary to BuildNestedDictionary
-    ListDics.append(BuildNestedDict(ListDics[0]))
-    print('main: ListDics[0]:',ListDics)
-    ListDics.append(BuildNestedDict(ListDics[1]))
+    #now pass this dictionary to BuildNestedDictionary n times where n = len(GRID)-1
+    for n in range (len(GRID)-1):
+        ListDics.append(BuildNestedDict(ListDics[-1]))
+    
     print('main: ListDics[1]:',ListDics)
 
     
@@ -55,4 +52,24 @@ def fn(nested_dict):
             # we get here is type NOT dictionary
             remove each element in turn
             dict from keys
+
+this results in correct list of nested dictionaries:
+[
+{'1': 0, '2': 0, '3': 0, '4': 0}, 
+{
+'1': {'2': 0, '3': 0, '4': 0}, '2': {'1': 0, '3': 0, '4': 0}, '3': {'1': 0, '2': 0, '4': 0}, '4': {'1': 0, '2': 0, '3': 0}
+}, 
+{
+'1': {'2': {'3': 0, '4': 0}, '3': {'2': 0, '4': 0}, '4': {'2': 0, '3': 0}}, 
+'2': {'1': {'3': 0, '4': 0}, '3': {'1': 0, '4': 0}, '4': {'1': 0, '3': 0}}, 
+'3': {'1': {'2': 0, '4': 0}, '2': {'1': 0, '4': 0}, '4': {'1': 0, '2': 0}}, 
+'4': {'1': {'2': 0, '3': 0}, '2': {'1': 0, '3': 0}, '3': {'1': 0, '2': 0}}
+}, 
+{
+'1': {'2': {'3': {'4': 0}, '4': {'3': 0}}, '3': {'2': {'4': 0}, '4': {'2': 0}}, '4': {'2': {'3': 0}, '3': {'2': 0}}}, 
+'2': {'1': {'3': {'4': 0}, '4': {'3': 0}}, '3': {'1': {'4': 0}, '4': {'1': 0}}, '4': {'1': {'3': 0}, '3': {'1': 0}}},
+'3': {'1': {'2': {'4': 0}, '4': {'2': 0}}, '2': {'1': {'4': 0}, '4': {'1': 0}}, '4': {'1': {'2': 0}, '2': {'1': 0}}}, 
+'4': {'1': {'2': {'3': 0}, '3': {'2': 0}}, '2': {'1': {'3': 0}, '3': {'1': 0}}, '3': {'1': {'2': 0}, '2': {'1': 0}}}
+}
+]
 '''
