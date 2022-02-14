@@ -26,7 +26,7 @@ def BuildNestedDict(input_dict):
 
 def main():
     ''''''
-    GRID = ['1', '2', '3', '4', '5']
+    GRID = ['1', '2', '3', '4']
     # first establish List with initial dictionary from Grid (i.e. the suggestion values for first move)
     ListDics = [dict.fromkeys(GRID,0)]
 
@@ -34,7 +34,15 @@ def main():
     for n in range (len(GRID)-1):
         ListDics.append(BuildNestedDict(ListDics[-1]))
     
-    print('main: ListDics[1]:',ListDics)
+    #print('main: ListDics[1]:',ListDics)
+
+    print()
+    #now I can set or get any desired move
+    #print(ListDics[0])
+    print(ListDics[1]['1'])
+    print(ListDics[1]['2'])
+    ListDics[1]['1']['2'] = 1
+    print(ListDics[1]['1'])
 
     
 

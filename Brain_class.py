@@ -22,64 +22,97 @@ class Brain(object):
         self.filename = playername + '.dat'                                   # each instance has a separate storage file
         try: 
             # TODO consider doing a sanity check on file (e.g. sizeof) to ensure it's what we expect
-            print('Brain.init: found file ', self.filename)
             self.f = open(self.filename, 'rb')
+            print('Brain.init: found file ', self.filename)
             # read in Brain dictionary from file
-            self.permDictionary = json.load(self.f)
+            self.brainDictionary = json.load(self.f)
             self.f.close()
             #print(f'Brain.init loaded dictionary: {filename} \n')
         except:
             print(f'file "{self.filename}" not found')
-            print('Brain.init: building permDictionary')
+            print('Brain.init: building BrainDictionary')
             # create a new empty brain dictionary,
-            self.permDictionary = self.GetPermutations()
+            # first establish List with initial dictionary from Grid (i.e. the suggestion values for first move)
+            self.brainDictionary = [dict.fromkeys(Brain.ticTacToeGrid,0)]
+
+            #now pass this dictionary to BuildNestedDictionary n times where n = len(GRID)-1
+            for n in range (len(Brain.ticTacToeGrid)-1):
+                self.brainDictionary.append(self.BuildNestedDict(self.brainDictionary[-1]))
+
+            print('Brain__init__: self.brainDictionary:', self.brainDictionary)
+
+            #self.brainDictionary = self.BuildNestedDict()
             #print(self.permDictionary)
-            print(f'length of dictionary is', len(self.permDictionary))
-            print('number of boxes is:',sum(len(v) for v in self.permDictionary.values()))
+            print(f'length of dictionary is', len(self.brainDictionary))
+
+            #TODO the below count does not work now that the overall brain is a list...
+            #print('number of boxes is:',sum(len(v) for v in self.brainDictionary.values()))
+            
             # store dictionary into 'filename'
             self.f = open(self.filename, 'w')
-            json.dump(self.permDictionary, self.f)
+            json.dump(self.brainDictionary, self.f)
             self.f.close()
             print(f'Brain.init: file {self.filename} created')
 
+    def BuildNestedDict(self, input_dict):
+        returnDict = {}
+        #print('BuildNestedDict: input_dict:', input_dict)  
+        for input_key, input_value in input_dict.items():
+            #print('BuildNestedDict: type(element)', type(input_value))
+            if type(input_value) is dict:   # if it's a nested dictionary, then recursive call.  If not, then we work on input dictionary
+                #print('BuildNestedDict: recursivne call----------------------------------------')
+                returnDict[input_key] = self.BuildNestedDict(input_value)
+                #print('BuildNestedDict: and mykey:', input_key)
+                #print('BuildNestedDict: returnDict so far...', returnDict)
+            else:
+                # we get here if type NOT dictionary
+                valsList = list(input_dict.keys())   # create a list of the keys in innermost dictionary so far
+                #print('BuildNestedDict: valsList:', valsList)
+                for key in valsList: 
+                    shortList = valsList[:]
+                    shortList.remove(key)
+                    returnDict[key] = dict.fromkeys(shortList,0) 
 
-    def Permutate(self,stacks, tiles):
-        '''takes 2 strings; stacks and tiles, and returns permutations by adding each tile to each stack'''
+        #print('BuildNestedDict: returnDict:', returnDict)
+        return returnDict
+
+    # def Permutate(self,stacks, tiles):
+    #     '''takes 2 strings; stacks and tiles, and returns permutations by adding each tile to each stack'''
     
-        permList = []
-        for stack in stacks:
-            availableTiles = tiles[:] # create a copy of 'tiles' so we don't corrupt original list
-            # first remove tiles that are in stack (i.e. remove tiles already used)
-            for item in stack:
-                availableTiles.remove(item)
+    #     permList = []
+    #     for stack in stacks:
+    #         availableTiles = tiles[:] # create a copy of 'tiles' so we don't corrupt original list
+    #         # first remove tiles that are in stack (i.e. remove tiles already used)
+    #         for item in stack:
+    #             availableTiles.remove(item)
 
-            #print(f'permutate: working on stack {stack} and tiles {availabletiles}')
-            # now we have our available tiles, add each one to each stack
-            for tile in availableTiles:
+    #         #print(f'permutate: working on stack {stack} and tiles {availabletiles}')
+    #         # now we have our available tiles, add each one to each stack
+    #         for tile in availableTiles:
                 
-                permListItem = stack + tile
-                #print(f'permutate: stack = {stack}, tile = {tile}, permListItem = {permListItem}  \n')
-                permList.append(permListItem)
+    #             permListItem = stack + tile
+    #             #print(f'permutate: stack = {stack}, tile = {tile}, permListItem = {permListItem}  \n')
+    #             permList.append(permListItem)
 
-        return permList
+    #     return permList
 
 
-    def GetPermutations(self):
-        '''Creates a dictionary of game move permutations'''
-        permutations = {}                   # this is the main dictionary that will be built up
-        myStacks = ['']                      # initial condition for stacks
+    # def GetPermutations(self):
+    #     '''Creates a dictionary of game move permutations'''
+    #     permutations = {}                   # this is the main dictionary that will be built up
+    #     myStacks = ['']                      # initial condition for stacks
 
-        # NOTE 9 permutations results in 986,409 memory boxes and slows down everything
-        # since the last move can only occupy one square anyway, i have chosen to do only 8 itterations
-        # which means that 'best_move' will have to be aware of this  
-        for n in range (len(Brain.ticTacToeGrid)-1): # NOTE -1 reduces boxes from 986,409 to 623,529
-        #for n in range (len(Brain.ticTacToeGrid)):
-            # a 'stack' is the set of move permutations so far.  e.g. [2,5] represents top middle, then centre tiles
-            #Sprint(f'this is move {n}, len(stack)={len(mystacks[0])}, len(Brain.ticTacToeGrid)={len(Brain.ticTacToeGrid)} and stacks={mystacks} \n')
-            myStacks = self.Permutate(myStacks, Brain.ticTacToeGrid)
-            permutations[n] = dict.fromkeys(myStacks, 0) # popluate each permutation with the initial value of 0
+    #     # NOTE 9 permutations results in 986,409 memory boxes and slows down everything
+    #     # since the last move can only occupy one square anyway, i have chosen to do only 8 itterations
+    #     # which means that 'best_move' will have to be aware of this  
+    #     for n in range (len(Brain.ticTacToeGrid)-1): # NOTE -1 reduces boxes from 986,409 to 623,529
+    #     #for n in range (len(Brain.ticTacToeGrid)):
+    #         # a 'stack' is the set of move permutations so far.  e.g. [2,5] represents top middle, then centre tiles
+    #         #Sprint(f'this is move {n}, len(stack)={len(mystacks[0])}, len(Brain.ticTacToeGrid)={len(Brain.ticTacToeGrid)} and stacks={mystacks} \n')
+    #         myStacks = self.Permutate(myStacks, Brain.ticTacToeGrid)
+    #         permutations[n] = dict.fromkeys(myStacks, 0) # popluate each permutation with the initial value of 0
 
-        return permutations
+    #     return permutations
 
 
     def LearnMoves(self, moveList):
@@ -94,9 +127,9 @@ class Brain(object):
         while len(moveList) > 0:
             print(f'move {moveList[-1]} scores {score}')
             # populate AI dictionary with move:score
-            self.permDictionary[str(len(moveList)-1)][str(''.join(moveList))] = score
+            self.brainDictionary[str(len(moveList)-1)][str(''.join(moveList))] = score
             print(len(moveList)-1, ''.join(moveList))
-            print(self.permDictionary[str(len(moveList)-1)][str(''.join(moveList))])
+            print(self.brainDictionary[str(len(moveList)-1)][str(''.join(moveList))])
 
             moveList.pop()          # remove the last item
             if score == winningMoveScore:
@@ -106,7 +139,7 @@ class Brain(object):
 
         # now save the updated dictionary to file:
         self.f = open(self.filename, 'w')
-        json.dump(self.permDictionary, self.f)
+        json.dump(self.brainDictionary, self.f)
         self.f.close()
         print(f'Brain.LearnMoves: file {self.filename} updated')
         
