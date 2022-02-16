@@ -43,8 +43,13 @@ def playComputer(COMPUTER):
     checkWin = False
     
     input('Press Enter key for COMPUTER to take turn...')
-    #get a random square from avaialable
-    select = choice(available)
+    # get suggested move from Brain
+    select = p1.SuggestMove(gameMoves)
+    # check we have found an available tile
+    if select not in available:
+        #get a random square from avaialable
+        select = choice(available)
+
     gameMoves.append(select)
     available.remove(select)
 
@@ -118,6 +123,7 @@ def main():
 
     if winner:
         p1.LearnMoves(gameMoves)
+
     print()
     print('Thanks for playing - try again!')
     #input('press Enter key to exit')

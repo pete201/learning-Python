@@ -90,19 +90,19 @@ class Brain(object):
         for i,move in enumerate(moveList) :
             # format is [List[dict[dict]]] so [int][str][str]...
             # first we get the dictionary corresponding to the move number 
-            updatePosn = self.brainDictionary[i]
+            gamePosn = self.brainDictionary[i]
 
             #then from this dictionary, we need to pull sucessive dictionaries
             for n in range(i):
-                print(f'looping thro dics; n={n} numMoves={i}')
-                updatePosn = updatePosn[moveList[n]]
+                #print(f'looping thro dics; n={n} numMoves={i}')
+                gamePosn = gamePosn[moveList[n]]
 
 
             # populate AI dictionary with move:score
-            print(f'Brain.LearnMoves; value found at {move} is {updatePosn}')
-            if type(updatePosn[move]) is not dict:
+            print(f'Brain.LearnMoves; value found at {move} is {gamePosn}')
+            if type(gamePosn[move]) is not dict:
                 print(f'Brain.LearnMoves; updating {move} by {score}')
-                updatePosn[move] += score
+                gamePosn[move] += score
 
                 if score == winningMoveScore:
                     score = losingMoveScore
@@ -115,9 +115,24 @@ class Brain(object):
         self.f.close()
         print(f'Brain.LearnMoves: file {self.filename} updated')
         
+    def SuggestMove(self, moveList):
+        '''from moves so far, looks up stored results and finds higest ranking move'''
+        
+        print('Brain.SuggestMove: game so far', moveList)
+        if moveList == []:
+            print('movelist is empty')
+        # format is [List[dict[dict]]] so [int][str][str]...
+        # first we get the dictionary corresponding to the move number 
+        gamePosn = self.brainDictionary[len(moveList)]
 
-    # TODO get best_move from brain (only 1st 8 moves in game: no suggestion for last move since only 1 square left anyway)
-    #      looks up highest number from sorted (https://www.geeksforgeeks.org/python-sort-python-dictionaries-by-key-or-value/?ref=rp) list given stack (game moves so far) 
+        for move in moveList:
+            gamePosn = gamePosn[move]
+
+        # gamePosn is now the dictionary with values for the next move.
+        # look up highest number from values
+        suggestion = max(gamePosn, key=gamePosn.get)
+        print('my suggestion is ',suggestion)
+        return suggestion
     
     # TODO destructor: __del__ make sure files are closed before exiting - beware not to break default action
 
