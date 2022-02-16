@@ -1,17 +1,27 @@
 # tic tac toe between human and computer
 
 
+import contextvars
 from random import choice
 from random import random
-from tkinter import Y
+from tkinter import N, Y
+
+from matplotlib.style import available
 from Brain_class import Brain 
 
-# initialisation
-available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-selected =  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-gameMoves = []                              # remembers move sequence of the game
-winner = False
+# global variables
+available = []
+selectedMoves = []
+gameMoves = []
 p1 = Brain('player1')                       # set up a player p1 for AI, nicname (filename)= 'player1'
+
+def ResetGame():
+    global available
+    available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    global selectedMoves
+    selectedMoves = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+    global gameMoves                        # remembers move sequence of the game
+    gameMoves = []
 
 def printBoard(board):
     print()
@@ -31,8 +41,8 @@ def playHuman(HUMAN):
     gameMoves.append(select)
     available.remove(select)
 
-    selected[int(select)-1] = HUMAN
-    printBoard(selected)
+    selectedMoves[int(select)-1] = HUMAN
+    printBoard(selectedMoves)
 
     checkWin = checkWinner()
     return checkWin
@@ -53,8 +63,8 @@ def playComputer(COMPUTER):
     gameMoves.append(select)
     available.remove(select)
 
-    selected[int(select)-1] = COMPUTER
-    printBoard(selected)
+    selectedMoves[int(select)-1] = COMPUTER
+    printBoard(selectedMoves)
 
     checkWin = checkWinner()
     return checkWin
@@ -62,14 +72,14 @@ def playComputer(COMPUTER):
 
 def checkWinner():
     win = False
-    row1 = (selected[0], selected[1], selected[2])
-    row2 = (selected[3], selected[4], selected[5])
-    row3 = (selected[6], selected[7], selected[8])
-    col1 = (selected[0], selected[3], selected[6])
-    col2 = (selected[1], selected[4], selected[7])
-    col3 = (selected[2], selected[5], selected[8])
-    diag1 = (selected[0], selected[4], selected[8])
-    diag2 = (selected[2], selected[4], selected[6])
+    row1 = (selectedMoves[0], selectedMoves[1], selectedMoves[2])
+    row2 = (selectedMoves[3], selectedMoves[4], selectedMoves[5])
+    row3 = (selectedMoves[6], selectedMoves[7], selectedMoves[8])
+    col1 = (selectedMoves[0], selectedMoves[3], selectedMoves[6])
+    col2 = (selectedMoves[1], selectedMoves[4], selectedMoves[7])
+    col3 = (selectedMoves[2], selectedMoves[5], selectedMoves[8])
+    diag1 = (selectedMoves[0], selectedMoves[4], selectedMoves[8])
+    diag2 = (selectedMoves[2], selectedMoves[4], selectedMoves[6])
     winLines = [row1, row2, row3, col1, col2, col3, diag1, diag2]
     
     while win == False:
@@ -86,47 +96,59 @@ def checkWinner():
 
 
 def main():
-    game_over = False
-    goFirst = input("Do you want to go first? (Y/N) ")
-    if goFirst.capitalize() == 'Y':
-        HUMAN = 'O'
-        COMPUTER = 'X'
-        player = 'HUMAN'
-    else:
-        HUMAN = 'X'
-        COMPUTER = 'O'
-        player = 'COMPUTER'
-
-    printBoard(available)
-
-    while not game_over:
-        if player == 'HUMAN':
-            game_over = playHuman(HUMAN)
-            if  game_over:
-                print(f"\nPlayer {player} won")
-                winner = True
-                break
-            else:
-                player = 'COMPUTER'
+    continue_playing = True
+    while continue_playing == True:
+        # initialisation
+        ResetGame()
+        winner = False
+        game_over = False
+        goFirst = input("Do you want to go first? (Y/N) ")
+        if goFirst.capitalize() == 'Y':
+            HUMAN = 'O'
+            COMPUTER = 'X'
+            player = 'HUMAN'
         else:
-            game_over = playComputer(COMPUTER)
-            if  game_over:
-                print(f"\nPlayer {player} won")
-                winner = True
-                break
-            else:
-                player = 'HUMAN'
-        if len(available) < 1:
-            print('It is a draw')
-            winner = False
-            game_over = True
+            HUMAN = 'X'
+            COMPUTER = 'O'
+            player = 'COMPUTER'
 
-    if winner:
-        p1.LearnMoves(gameMoves)
+        printBoard(available)
+
+        while not game_over:
+            if player == 'HUMAN':
+                game_over = playHuman(HUMAN)
+                if  game_over:
+                    print(f"\nPlayer {player} won")
+                    winner = True
+                    break
+                else:
+                    player = 'COMPUTER'
+            else:
+                game_over = playComputer(COMPUTER)
+                if  game_over:
+                    print(f"\nPlayer {player} won")
+                    winner = True
+                    break
+                else:
+                    player = 'HUMAN'
+            if len(available) < 1:
+                print('It is a draw')
+                winner = False
+                game_over = True
+
+        if winner:
+            p1.LearnMoves(gameMoves)
+        
+        continue_playing = input('Play again? (Y/N) ')
+        if continue_playing.capitalize() == 'N':
+            continue_playing = False
+        else:
+            continue_playing = True
+
 
     print()
-    print('Thanks for playing - try again!')
-    #input('press Enter key to exit')
+    p1.Save()
+    print('Thanks for playing')
     exit()
 
 if __name__ == "__main__":

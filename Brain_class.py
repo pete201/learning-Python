@@ -109,6 +109,7 @@ class Brain(object):
                 else:
                     score = winningMoveScore
 
+    def Save(self):
         # now save the updated dictionary to file:
         self.f = open(self.filename, 'w')
         json.dump(self.brainDictionary, self.f)
