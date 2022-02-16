@@ -146,7 +146,7 @@ def main():
             continue_playing = True
 
 
-    print()
+    print('Remembering what I learnt, please wait...')
     p1.Save()
     print('Thanks for playing')
     exit()
