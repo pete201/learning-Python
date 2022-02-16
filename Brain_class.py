@@ -2,7 +2,6 @@
 # memory locations will be populated vlaues indicating likelihood of winning move
 # if a move is a winning move, +1, if it's a losing move -1, for a draw do nothing
 
-
 import json
 
 
@@ -39,10 +38,7 @@ class Brain(object):
             for n in range (len(Brain.ticTacToeGrid)-1):
                 self.brainDictionary.append(self.BuildNestedDict(self.brainDictionary[-1]))
 
-            print('Brain__init__: self.brainDictionary:', self.brainDictionary)
-
-            #self.brainDictionary = self.BuildNestedDict()
-            #print(self.permDictionary)
+            #print('Brain__init__: self.brainDictionary:', self.brainDictionary)
             print(f'length of dictionary is', len(self.brainDictionary))
 
             #TODO the below count does not work now that the overall brain is a list...
@@ -56,18 +52,13 @@ class Brain(object):
 
     def BuildNestedDict(self, input_dict):
         returnDict = {}
-        #print('BuildNestedDict: input_dict:', input_dict)  
         for input_key, input_value in input_dict.items():
             #print('BuildNestedDict: type(element)', type(input_value))
             if type(input_value) is dict:   # if it's a nested dictionary, then recursive call.  If not, then we work on input dictionary
-                #print('BuildNestedDict: recursivne call----------------------------------------')
                 returnDict[input_key] = self.BuildNestedDict(input_value)
-                #print('BuildNestedDict: and mykey:', input_key)
-                #print('BuildNestedDict: returnDict so far...', returnDict)
             else:
                 # we get here if type NOT dictionary
                 valsList = list(input_dict.keys())   # create a list of the keys in innermost dictionary so far
-                #print('BuildNestedDict: valsList:', valsList)
                 for key in valsList: 
                     shortList = valsList[:]
                     shortList.remove(key)
@@ -76,66 +67,47 @@ class Brain(object):
         #print('BuildNestedDict: returnDict:', returnDict)
         return returnDict
 
-    # def Permutate(self,stacks, tiles):
-    #     '''takes 2 strings; stacks and tiles, and returns permutations by adding each tile to each stack'''
-    
-    #     permList = []
-    #     for stack in stacks:
-    #         availableTiles = tiles[:] # create a copy of 'tiles' so we don't corrupt original list
-    #         # first remove tiles that are in stack (i.e. remove tiles already used)
-    #         for item in stack:
-    #             availableTiles.remove(item)
-
-    #         #print(f'permutate: working on stack {stack} and tiles {availabletiles}')
-    #         # now we have our available tiles, add each one to each stack
-    #         for tile in availableTiles:
-                
-    #             permListItem = stack + tile
-    #             #print(f'permutate: stack = {stack}, tile = {tile}, permListItem = {permListItem}  \n')
-    #             permList.append(permListItem)
-
-    #     return permList
-
-
-    # def GetPermutations(self):
-    #     '''Creates a dictionary of game move permutations'''
-    #     permutations = {}                   # this is the main dictionary that will be built up
-    #     myStacks = ['']                      # initial condition for stacks
-
-    #     # NOTE 9 permutations results in 986,409 memory boxes and slows down everything
-    #     # since the last move can only occupy one square anyway, i have chosen to do only 8 itterations
-    #     # which means that 'best_move' will have to be aware of this  
-    #     for n in range (len(Brain.ticTacToeGrid)-1): # NOTE -1 reduces boxes from 986,409 to 623,529
-    #     #for n in range (len(Brain.ticTacToeGrid)):
-    #         # a 'stack' is the set of move permutations so far.  e.g. [2,5] represents top middle, then centre tiles
-    #         #Sprint(f'this is move {n}, len(stack)={len(mystacks[0])}, len(Brain.ticTacToeGrid)={len(Brain.ticTacToeGrid)} and stacks={mystacks} \n')
-    #         myStacks = self.Permutate(myStacks, Brain.ticTacToeGrid)
-    #         permutations[n] = dict.fromkeys(myStacks, 0) # popluate each permutation with the initial value of 0
-
-    #     return permutations
-
 
     def LearnMoves(self, moveList):
         '''input moveList, fill in AI dictionary based on winning moves'''
-        # learn from game_result - (if 9 moves in game, don't try to write to last move as it won't exist in dictionary)
+        # learn from game_result
         print('Brain.LearnMoves: ', moveList)
-        # starting at winning move, result is +1, -1, +1, -1... until end
+        # working backwards from winning move, result is +1, -1, +1, -1... until beginning
+        # so if number of moves is ODD then first move was WINNER, and if EVEN then first move was a LOSER
+        # A number is even if division by 2 gives a remainder of 0.
+        # If the remainder is 1, it is an odd number.
         winningMoveScore = 1
         losingMoveScore = -1
-        score = winningMoveScore
+        if len(moveList)%2 ==0: 
+            score = losingMoveScore
+        else:
+            score = winningMoveScore
 
-        while len(moveList) > 0:
-            print(f'move {moveList[-1]} scores {score}')
+        # pull prgressive dictionaries from list
+        # start with dictionary at list[move_number]
+        # from that pull dictionary at posn [i]
+        # etc...
+        for i,move in enumerate(moveList) :
+            # format is [List[dict[dict]]] so [int][str][str]...
+            # first we get the dictionary corresponding to the move number 
+            updatePosn = self.brainDictionary[i]
+
+            #then from this dictionary, we need to pull sucessive dictionaries
+            for n in range(i):
+                print(f'looping thro dics; n={n} numMoves={i}')
+                updatePosn = updatePosn[moveList[n]]
+
+
             # populate AI dictionary with move:score
-            self.brainDictionary[str(len(moveList)-1)][str(''.join(moveList))] = score
-            print(len(moveList)-1, ''.join(moveList))
-            print(self.brainDictionary[str(len(moveList)-1)][str(''.join(moveList))])
+            print(f'Brain.LearnMoves; value found at {move} is {updatePosn}')
+            if type(updatePosn[move]) is not dict:
+                print(f'Brain.LearnMoves; updating {move} by {score}')
+                updatePosn[move] += score
 
-            moveList.pop()          # remove the last item
-            if score == winningMoveScore:
-                score = losingMoveScore
-            else:
-                score = winningMoveScore
+                if score == winningMoveScore:
+                    score = losingMoveScore
+                else:
+                    score = winningMoveScore
 
         # now save the updated dictionary to file:
         self.f = open(self.filename, 'w')
@@ -146,24 +118,6 @@ class Brain(object):
 
     # TODO get best_move from brain (only 1st 8 moves in game: no suggestion for last move since only 1 square left anyway)
     #      looks up highest number from sorted (https://www.geeksforgeeks.org/python-sort-python-dictionaries-by-key-or-value/?ref=rp) list given stack (game moves so far) 
-    #   thinking it best to change dictionary to deep nested as it's hard to look up next move in current format
-    #   think it will be easier to refernce for next move if it is
-    # 1
-    #   2
-    #       3
-    #   3
-    #       2 
-    # 2
-    #   1
-    #       3
-    #   3
-    #       1 
-    # 3
-    #   1
-    #       2
-    #   2
-    #       1 
- 
     
     # TODO destructor: __del__ make sure files are closed before exiting - beware not to break default action
 
@@ -172,6 +126,18 @@ def main():
 
     # write a get_best_move method that looks up highest number from sorted list given stack (game moves so far)
     #print(p1[0])
+
+    # TEST gamemoves.  gamemoves is a list which is passed to 'LearnMoves' which stores them in the List of Dictionaries
+    gamemoves = ['1', '2', '4', '6', '7']
+    p1.LearnMoves(gamemoves)
+
+    print(p1.brainDictionary[0])                        # series
+    print(p1.brainDictionary[0]['1'])                   # value
+    print(p1.brainDictionary[1]['1'])                   # series
+    print(p1.brainDictionary[1]['1']['2'])              # value
+    print(p1.brainDictionary[2]['1']['2']['4'])
+    print(p1.brainDictionary[3]['1']['2']['4']['6'])
+    print(p1.brainDictionary[4]['1']['2']['4']['6']['7'])
 
 
     print('done')
