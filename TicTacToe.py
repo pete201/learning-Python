@@ -99,14 +99,24 @@ def checkWinner():
 
 
 def main():
+    askGoFirst = input("Do you want to go first? (Y/N) ")
+    # reverse logic here since reversed at game start
+    if askGoFirst.capitalize() == 'Y':
+        goFirst = False
+    else:
+        goFirst = True
+
     continue_playing = True
     while continue_playing == True:
         # initialisation
         ResetGame()
         winner = False
         game_over = False
-        goFirst = input("Do you want to go first? (Y/N) ")
-        if goFirst.capitalize() == 'Y':
+        
+        # switch player
+        goFirst = not goFirst
+        
+        if goFirst == True:
             HUMAN = 'O'
             COMPUTER = 'X'
             player = 'HUMAN'
