@@ -139,7 +139,8 @@ def main():
                 game_over = True
 
         if winner:
-            p1.LearnMoves(gameMoves)
+            #p1.LearnMoves(gameMoves)
+            p1.Learn8from1(gameMoves)
         
         continue_playing = input('Play again? (Y/N) ')
         if continue_playing.capitalize() == 'N':
