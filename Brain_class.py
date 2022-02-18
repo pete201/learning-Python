@@ -99,9 +99,9 @@ class Brain(object):
 
 
             # populate AI dictionary with move:score
-            print(f'Brain.LearnMoves; value found at {move} is {gamePosn}')
+            #print(f'Brain.LearnMoves; value found at {move} is {gamePosn}')
             if type(gamePosn[move]) is not dict:
-                print(f'Brain.LearnMoves; updating {move} by {score}')
+                #print(f'Brain.LearnMoves; updating {move} by {score}')
                 gamePosn[move] += score
 
                 if score == winningMoveScore:
@@ -135,6 +135,55 @@ class Brain(object):
         print('my suggestion is ',suggestion)
         return suggestion
     
+    def Rotate(self, moveList):
+        '''takes tic-tac-toe tile position and rotates tic-tac-toe grid once clockwise'''
+        ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        rotateGrid = ['7', '4', '1', '8', '5', '2', '9', '6', '3']
+        rotateList = []
+
+        for tile in moveList:
+            rotateTile = rotateGrid[ticTacToeGrid.index(tile)]
+            rotateList.append(rotateTile)
+
+        return rotateList
+
+
+    def Mirror(self, moveList):
+        '''takes tic-tac-toe tile position and mirrors tic-tac-toe grid vertically'''
+        ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        mirrorGrid = ['3', '2', '1', '6', '5', '4', '9', '8', '7']
+        mirrorList = []
+
+        for tile in moveList:
+            mirrorTile = mirrorGrid[ticTacToeGrid.index(tile)]
+            mirrorList.append(mirrorTile)
+
+        return mirrorList
+
+    def Learn8from1(self, moveList):
+        '''8 games learnt from one with 3 rotations, mirror, another 3 rotations'''
+
+        # Learn original game
+        print('Learning original game:', moveList)
+        self.LearnMoves(moveList)
+        
+        # rotate game 3 times and learn each...
+        for n in range(3):
+            moveList = self.Rotate(moveList)
+            print('Learning game derivative:', moveList)
+            self.LearnMoves(moveList)
+
+        # mirror game and learn...
+        moveList = self.Mirror(moveList)
+        print('Learning game derivative:', moveList)
+        self.LearnMoves(moveList)
+
+        # rotate game another 3 times and learn each...
+        for n in range(3):
+            moveList = self.Rotate(moveList)
+            print('Learning game derivative:', moveList)
+            self.LearnMoves(moveList)
+
     # TODO destructor: __del__ make sure files are closed before exiting - beware not to break default action
 
 def main():
