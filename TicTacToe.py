@@ -17,6 +17,7 @@ gameMoves = []
 # set up a learning brain
 p1 = Brain('player1')                       # set up a player p1 for AI, nicname (filename)= 'player1'
 
+
 def ResetGame():
     global available
     available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']

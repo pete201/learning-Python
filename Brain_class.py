@@ -71,7 +71,7 @@ class Brain(object):
     def LearnMoves(self, moveList):
         '''input moveList, fill in AI dictionary based on winning moves'''
         # learn from game_result
-        print('Brain.LearnMoves: ', moveList)
+        #print('Brain.LearnMoves: ', moveList)
         # working backwards from winning move, result is +1, -1, +1, -1... until beginning
         # so if number of moves is ODD then first move was WINNER, and if EVEN then first move was a LOSER
         # A number is even if division by 2 gives a remainder of 0.
