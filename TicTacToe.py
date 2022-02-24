@@ -1,12 +1,10 @@
 # tic tac toe between human and computer
 
 
-import contextvars
 from random import choice
 from random import random
 from tkinter import N, Y
 
-from matplotlib.style import available
 from Brain_class import Brain 
 
 # global variables
@@ -97,6 +95,17 @@ def checkWinner():
     return win    
 
 
+def stats(player, result):
+    '''updates game stats and records into a csv file'''
+    # TODO open or create stats.csv
+    # format is 'player', 'result'
+    # e.g. COMPUTER, won
+    # or HUMAN, draw
+    # idea is that i can then plot this in Excel
+
+    # TODO cat result to end of file
+
+    # TODO close file
 
 def main():
     askGoFirst = input("Do you want to go first? (Y/N) ")
@@ -131,7 +140,6 @@ def main():
             if player == 'HUMAN':
                 game_over = playHuman(HUMAN)
                 if  game_over:
-                    print(f"\nPlayer {player} won")
                     winner = True
                     break
                 else:
@@ -139,19 +147,20 @@ def main():
             else:
                 game_over = playComputer(COMPUTER)
                 if  game_over:
-                    print(f"\nPlayer {player} won")
                     winner = True
                     break
                 else:
                     player = 'HUMAN'
             if len(available) < 1:
-                print('It is a draw')
                 winner = False
                 game_over = True
 
         if winner:
             #p1.LearnMoves(gameMoves)
             p1.Learn8from1(gameMoves)
+            print(f"\nPlayer {player} won")
+        else:
+            print('It is a draw')
         
         continue_playing = input('Play again? (Y/N) ')
         if continue_playing.capitalize() == 'N':
