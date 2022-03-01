@@ -95,18 +95,6 @@ def checkWinner():
     return win    
 
 
-def stats(player, result):
-    '''updates game stats and records into a csv file'''
-    # TODO open or create stats.csv
-    # format is 'player', 'result'
-    # e.g. COMPUTER, won
-    # or HUMAN, draw
-    # idea is that i can then plot this in Excel
-
-    # TODO cat result to end of file
-
-    # TODO close file
-
 def main():
     askGoFirst = input("Do you want to go first? (Y/N) ")
     # reverse logic here since reversed at game start
@@ -159,8 +147,10 @@ def main():
             #p1.LearnMoves(gameMoves)
             p1.Learn8from1(gameMoves)
             print(f"\nPlayer {player} won")
+            p1.gameStats(player, 'win')
         else:
             print('It is a draw')
+            p1.gameStats(player, 'draw')
         
         continue_playing = input('Play again? (Y/N) ')
         if continue_playing.capitalize() == 'N':

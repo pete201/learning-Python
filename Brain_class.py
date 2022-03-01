@@ -18,7 +18,8 @@ class Brain(object):
     # constructor: see if file exists, if not create a new empty brain
     def __init__(self, playername):
         # instance attributes - particular to this instance
-        self.filename = playername + '.dat'                                   # each instance has a separate storage file
+        self.logfilename = playername + '.csv'              # each instance has a game stats log file, updated in def gameStats
+        self.filename = playername + '.dat'             # each instance has a separate storage file
         try: 
             # TODO consider doing a sanity check on file (e.g. sizeof) to ensure it's what we expect
             self.f = open(self.filename, 'rb')
@@ -49,6 +50,17 @@ class Brain(object):
             json.dump(self.brainDictionary, self.f)
             self.f.close()
             print(f'Brain.init: file {self.filename} created')
+
+    def gameStats(self, player, result):
+        # try to open logfile to see if it exists
+        try: 
+            self.logf = open(self.logfilename, 'a') # this will create logfile if it does not already exist and append to end of file
+            logEntry = str(player) + ',' + result + '\n'
+            self.logf.write(logEntry)
+            self.logf.close()
+            print(f'file "{self.logfilename}" updated with {logEntry}')  
+        except:
+            print(f'file "{self.logfilename}" not found')        
 
     def BuildNestedDict(self, input_dict):
         returnDict = {}
@@ -183,6 +195,7 @@ class Brain(object):
             moveList = self.Rotate(moveList)
             print('Learning game derivative:', moveList)
             self.LearnMoves(moveList)
+
 
     # TODO destructor: __del__ make sure files are closed before exiting - beware not to break default action
 
