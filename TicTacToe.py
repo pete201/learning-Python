@@ -3,7 +3,7 @@
 
 from random import choice
 from random import random
-from tkinter import N, Y
+import tkinter as tk
 
 from Brain_class import Brain 
 
@@ -31,6 +31,16 @@ def printBoard(board):
     print(f'{board[3]} | {board[4]} | {board[5]} ')
     print('-'*9)
     print(f'{board[6]} | {board[7]} | {board[8]} \n')
+
+def updateBoardGUI(board):
+    boardIndex = 0
+    for row in ['row1','row2','row3']:
+        row = tk.Frame()
+        row.pack()
+        for btn in ['1','2','3']:
+            btn = tk.Button(master=row, text=str(boardIndex), width=14, height=6, bg="blue", fg="yellow", relief=tk.GROOVE)
+            btn.pack(side=tk.LEFT)
+            boardIndex += 1
 
 
 def playHuman(HUMAN):
@@ -96,6 +106,17 @@ def checkWinner():
 
 
 def main():
+    window = tk.Tk()    # create a tkinter window
+    title = tk.Label(text="Welcome to Noughts and Crosses. Close window to exit")
+    # TODO consider alternative Geometry Manager (e.g. .place() or .grid() )
+    title.pack()
+
+    updateBoardGUI(available)
+
+    window.mainloop()
+    exit()      # this closes the tk window
+
+
     askGoFirst = input("Do you want to go first? (Y/N) ")
     # reverse logic here since reversed at game start
     if askGoFirst.capitalize() == 'Y':
