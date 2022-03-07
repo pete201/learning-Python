@@ -13,7 +13,7 @@ selectedMoves = []
 gameMoves = []
 
 # set up a learning brain
-p1 = Brain('player1')                       # set up a player p1 for AI, nicname (filename)= 'player1'
+p1 = Brain('player2')                       # set up a player p1 for AI, nicname (filename)= 'player1'
 
 
 def ResetGame():
