@@ -9,8 +9,10 @@ class GUI_ttt(Frame):
         self.create_widgets()
         
     def button_press(self, btn):
-        print(f'button pressed {btn}')
-
+        #print(f'button pressed {btn}')
+        #print(self.buttons[btn-1])
+        # update the text on button when button is pressed.
+        self.buttons[btn-1].config(text='newtext')
 
 
     def create_widgets(self):

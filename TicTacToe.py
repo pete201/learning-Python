@@ -1,10 +1,8 @@
 # tic tac toe between human and computer
 
 
-from random import choice
-from random import random
-import tkinter as tk
-
+from tkinter import *
+from GUI-TTT_class import *
 from Brain_class import Brain 
 
 # global variables
@@ -32,15 +30,6 @@ def printBoard(board):
     print('-'*9)
     print(f'{board[6]} | {board[7]} | {board[8]} \n')
 
-def updateBoardGUI(board):
-    boardIndex = 0
-    for row in ['row1','row2','row3']:
-        row = tk.Frame()
-        row.pack()
-        for btn in ['1','2','3']:
-            btn = tk.Button(master=row, text=str(boardIndex), width=14, height=6, bg="blue", fg="yellow", relief=tk.GROOVE)
-            btn.pack(side=tk.LEFT)
-            boardIndex += 1
 
 
 def playHuman(HUMAN):
@@ -106,15 +95,12 @@ def checkWinner():
 
 
 def main():
-    window = tk.Tk()    # create a tkinter window
-    title = tk.Label(text="Welcome to Noughts and Crosses. Close window to exit")
-    # TODO consider alternative Geometry Manager (e.g. .place() or .grid() )
-    title.pack()
+    root = Tk()
+    root.title('Tic-Tac-Toe')
 
-    updateBoardGUI(available)
+    myGUI = GUI_ttt(root)
 
-    window.mainloop()
-    exit()      # this closes the tk window
+    root.mainloop()
 
 
     askGoFirst = input("Do you want to go first? (Y/N) ")
