@@ -1,9 +1,11 @@
+# class to hold tic tac toe board
+
 from tkinter import *
 
-class GUI_ttt(Frame):
+class tttGUI(Frame):
     '''GUI implimentation or Tic-Tac-Toe'''
     def __init__(self, master) -> None:
-        super(GUI_ttt, self).__init__(master)
+        super(tttGUI, self).__init__(master)
         self.grid()
         self.buttons = []
         self.create_widgets()
@@ -36,7 +38,7 @@ def main():
     root = Tk()
     root.title('Tic-Tac-Toe')
 
-    myGUI = GUI_ttt(root)
+    myGUI = tttGUI(root)
 
     root.mainloop()
 

@@ -2,7 +2,7 @@
 
 
 from tkinter import *
-from GUI-TTT_class import *
+from tttGUI_class import *
 from Brain_class import Brain 
 
 # global variables
@@ -93,23 +93,38 @@ def checkWinner():
 
     return win    
 
+def switchPlayer(goFirst):
+    first = not goFirst
+        
+    if first == True:
+        HUMAN = 'O'
+        COMPUTER = 'X'
+        player = 'HUMAN'
+    else:
+        HUMAN = 'X'
+        COMPUTER = 'O'
+        player = 'COMPUTER'
+        
+    return HUMAN, COMPUTER, player, first
 
 def main():
     root = Tk()
     root.title('Tic-Tac-Toe')
 
-    myGUI = GUI_ttt(root)
+    myGUI = tttGUI(root)
+
+    
+    # askGoFirst = input("Do you want to go first? (Y/N) ")
+    # # reverse logic here since reversed at game start
+    # if askGoFirst.capitalize() == 'Y':
+    #     goFirst = False
+    # else:
+    #     goFirst = True
+
 
     root.mainloop()
 
-
-    askGoFirst = input("Do you want to go first? (Y/N) ")
-    # reverse logic here since reversed at game start
-    if askGoFirst.capitalize() == 'Y':
-        goFirst = False
-    else:
-        goFirst = True
-
+    goFirst = False     # this allows HUMAN to go first
     continue_playing = True
     while continue_playing == True:
         # initialisation
@@ -118,16 +133,8 @@ def main():
         game_over = False
         
         # switch player
-        goFirst = not goFirst
+        HUMAN, COMPUTER, player, goFirst = switchPlayer(goFirst)
         
-        if goFirst == True:
-            HUMAN = 'O'
-            COMPUTER = 'X'
-            player = 'HUMAN'
-        else:
-            HUMAN = 'X'
-            COMPUTER = 'O'
-            player = 'COMPUTER'
 
         printBoard(available)
 
