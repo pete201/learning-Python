@@ -3,18 +3,42 @@
 from tkinter import *
 
 class tttGUI(Frame):
-    '''GUI implimentation or Tic-Tac-Toe'''
+    '''GUI implementation of Tic-Tac-Toe'''
     def __init__(self, master) -> None:
         super(tttGUI, self).__init__(master)
         self.grid()
         self.buttons = []
         self.create_widgets()
-        
+
+        self.available = []
+        self.selectedMoves = []
+        self.gameMoves = []
+        self.ResetGame()
+
+
+    def ResetGame(self):
+        #global available
+        self.available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        #global selectedMoves
+        self.selectedMoves = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        #global gameMoves                        # remembers move sequence of the game
+        self.gameMoves = []
+
+
     def button_press(self, btn):
         #print(f'button pressed {btn}')
         #print(self.buttons[btn-1])
         # update the text on button when button is pressed.
-        self.buttons[btn-1].config(text='newtext')
+        #self.buttons[btn-1].config(text='newtext')
+        self.buttons[btn-1]['text']='newtext'
+
+        # play HUMAN turn
+            #check if tile is vaccant
+            # update btn txt wit HUMAN character
+            # check if win
+            # get COMPUTER move
+            # update btn with COMUTER  char
+            # check win
 
 
     def create_widgets(self):
