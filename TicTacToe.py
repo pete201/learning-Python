@@ -1,4 +1,5 @@
 # tic tac toe between human and computer
+# COmmand line interface version
 
 
 from random import choice
