@@ -4,6 +4,7 @@
 from tkinter import *
 from tttGUI_class import *
 from Brain_class import Brain 
+from random import choice
 
 # global variables
 available = []
