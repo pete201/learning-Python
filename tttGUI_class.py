@@ -32,6 +32,7 @@ class tttGUI(Frame):
         self.selectedMoves = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
         #global gameMoves                        # remembers move sequence of the game
         self.gameMoves = []
+        #TODO assign buttons to respond to clicks
 
 
     def switchPlayer(self, goFirst):
@@ -104,6 +105,8 @@ class tttGUI(Frame):
                 winner = True
 
                 print('HUMAN won')
+                #TODO GameOver: assign buttons to do nothing if clicked
+                #TODO GameOver: update game stats file e.g. player.csv
 
                 return
             else:
@@ -130,11 +133,14 @@ class tttGUI(Frame):
                     winner = True
 
                     print('COMPUTER won')
+                    #TODO GameOver: assign buttons to do nothing if clicked
+                    #TODO GameOver: update game stats file e.g. player.csv
 
                     return
 
             #if WINNER
-                #learn game moves
+                #learn game moves 
+                #NOTE i could learn moves when window is closed - back in main prog.
 
 
     def create_widgets(self):
