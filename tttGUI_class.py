@@ -76,10 +76,7 @@ class tttGUI(Frame):
 
     def button_press(self, btn):
         print(f'button pressed {btn}')
-        #print(self.buttons[btn-1])
         # update the text on button when button is pressed.  use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
-                #self.buttons[btn-1].config(text='newtext')
-                #self.buttons[btn-1]['text']='newtext'
 
         # play HUMAN turn
         #check if tile is vaccant
@@ -89,9 +86,7 @@ class tttGUI(Frame):
         else:
             # update available and game arrays
             self.gameMoves.append(str(btn))
-            #print(self.gameMoves)
             self.available.remove(str(btn))
-            #print(self.available)
 
             self.selectedMoves[btn-1] = self.HUMAN 
 
@@ -100,14 +95,12 @@ class tttGUI(Frame):
             
             # check if win
             gameOver = self.checkWinner()   # checkWinner returns TRUE if last move was a winning move
-            #print(f'gameOver = {gameOver} ')
             if  gameOver:
                 winner = True
 
                 print('HUMAN won')
                 #TODO GameOver: assign buttons to do nothing if clicked
                 #TODO GameOver: update game stats file e.g. player.csv
-
                 return
             else:
                 print(f'no winner yet, gameMoves: {self.gameMoves} , and selectedMoves: {self.selectedMoves} ')
@@ -128,14 +121,11 @@ class tttGUI(Frame):
                 self.buttons[int(select)-1]['text'] = self.COMPUTER
                 # check if win
                 gameOver = self.checkWinner()   # checkWinner returns TRUE if last move was a winning move
-                #print(f'gameOver = {gameOver} ')
                 if  gameOver:
                     winner = True
-
                     print('COMPUTER won')
                     #TODO GameOver: assign buttons to do nothing if clicked
                     #TODO GameOver: update game stats file e.g. player.csv
-
                     return
 
             #if WINNER
