@@ -131,6 +131,7 @@ class tttGUI(Frame):
             #if WINNER
                 #learn game moves 
                 #NOTE i could learn moves when window is closed - back in main prog.
+                #TODO this version throws an error on a draw!!
 
 
     def create_widgets(self):
