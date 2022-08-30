@@ -54,10 +54,10 @@ class Brain(object):
     def gameStats(self, player, result):
         # try to open logfile to see if it exists
         try: 
-            self.logf = open(self.logfilename, 'a') # this will create logfile if it does not already exist and append to end of file
+            logf = open(self.logfilename, 'a') # this will create logfile if it does not already exist and append to end of file
             logEntry = str(player) + ',' + result + '\n'
-            self.logf.write(logEntry)
-            self.logf.close()
+            logf.write(logEntry)
+            logf.close()
             print(f'file "{self.logfilename}" updated with {logEntry}')  
         except:
             print(f'file "{self.logfilename}" not found')        
