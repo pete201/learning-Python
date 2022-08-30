@@ -12,10 +12,6 @@ class tttGUI(Frame):
         self.grid()
         self.buttons = []
         self.create_widgets()
-
-        self.available = []
-        self.selectedMoves = []
-        self.gameMoves = []
         self.ResetGame()
 
         goFirst = False     # this allows HUMAN to go first
@@ -26,13 +22,11 @@ class tttGUI(Frame):
         self.p1 = Brain('player1')                       # set up a player p1 for AI, nicname (filename)= 'player1'
 
     def ResetGame(self):
-        #global available
+        # reset the available moves and the selected moves so far...
         self.available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-        #global selectedMoves
         self.selectedMoves = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
-        #global gameMoves                        # remembers move sequence of the game
+        # remembers move sequence of the game
         self.gameMoves = []
-        #TODO assign buttons to respond to clicks
 
 
     def switchPlayer(self, goFirst):
@@ -79,9 +73,8 @@ class tttGUI(Frame):
         # update the text on button when button is pressed.  use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
 
         # play HUMAN turn
-        #check if tile is vaccant
+        #check if tile is vaccant else return without doing anything
         if self.buttons[btn-1]['text'] != '':
-            # if button has text then return without doing anything
             return      
         else:
             # update available and game arrays
@@ -100,8 +93,15 @@ class tttGUI(Frame):
 
                 print('HUMAN won')
                 #TODO GameOver: assign buttons to do nothing if clicked
-                #TODO GameOver: update game stats file e.g. player.csv
+                self.p1.gameStats("HUMAN", self.gameMoves)
                 return
+
+            # check if draw
+            if len(self.gameMoves) > 8:
+                print("We have a draw!!")
+                self.p1.gameStats("HUMAN", self.gameMoves)
+                return    
+
             else:
                 print(f'no winner yet, gameMoves: {self.gameMoves} , and selectedMoves: {self.selectedMoves} ')
                 #play COMPUTER turn
@@ -125,13 +125,19 @@ class tttGUI(Frame):
                     winner = True
                     print('COMPUTER won')
                     #TODO GameOver: assign buttons to do nothing if clicked
-                    #TODO GameOver: update game stats file e.g. player.csv
+                    self.p1.gameStats("COMPUTER", self.gameMoves)
                     return
+
+                # check if draw
+                if len(self.gameMoves) > 8:
+                    print("We have a draw!!")
+                    self.p1.gameStats("COMPUTER", self.gameMoves)
+                    return  
 
             #if WINNER
                 #learn game moves 
                 #NOTE i could learn moves when window is closed - back in main prog.
-                #TODO this version throws an error on a draw!!
+
 
 
     def create_widgets(self):
@@ -145,10 +151,8 @@ class tttGUI(Frame):
         for r in range(3):
             for c in range(3):
                 count += 1
-                #self.buttons.append(Button(self, text=f'button {r},{c}', width=14, height=6, bg="blue", fg="yellow", relief=GROOVE, command=lambda x=count: self.button_press(x)))
                 self.buttons.append(Button(self, text='', width=14, height=6, bg="blue", fg="yellow", relief=GROOVE, command=lambda x=count: self.button_press(x)))
                 self.buttons[-1].grid(row=r+1, column=c)
-                #self.buttons[-1].bind('<Button-1>', self.button_press())
 
 
 
