@@ -1,0 +1,217 @@
+# class to hold tic tac toe board
+
+from tkinter import *
+from Brain_class import Brain 
+
+
+class player():
+    def __init__(self, genus, token) -> None:
+        self.genus = genus  # legal values are 'HUMAN' and 'COMPUTER'
+        self.token = token
+
+        # if a COMPUTER, we need to set up a Brian:
+        if self.genus == 'COMPUTER':
+            self.brain1 = Brain('Brian')
+            
+
+
+class game():
+    def __init__(self) -> None:
+        self.player1 = player('HUMAN','X')
+        self.player2 = player('COMPUTER','O')
+        self.current_player = self.player1
+
+    def switch_turn(self):
+        if self.current_player == self.player1:
+            self.current_player =self.player2
+        else:
+            self.current_player = self.player1
+
+
+    def swap_who_goes_first(self):
+        '''whoever is assigned 'X' went first last time'''
+        if self.player1.token == 'X':
+            self.player1.token = 'O'
+            self.player2.token = 'X'
+            self.current_player = self.player2
+        else:
+            self.player1.token = 'X'
+            self.player2.token = 'O'
+            self.current_player = self.player1
+
+
+    def play_move(self, tile_number = None):
+        '''if a tile number is passed, play that, otherwise look up suggestion from Brain'''
+        if tile_number: # indicates HUMAN player
+            # use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
+            #check if tile is vaccant else return without doing anything
+            if myGUI.buttons[tile_number-1]['text'] != '':
+                return      
+            else:
+            # if it is, 
+            #   populate tile with current players token
+            #   update played list
+            #   update available list
+            #   if win:
+            #       game_over = True
+            #   else:
+            #       switch_player
+            #       if current_player.genus == 'COMPUTER':
+            #           play_move()     # no parameter passed to invoke Brian
+    
+        else:
+            '''no tile number required for COMPUTER turn'''
+            pass
+
+    
+
+
+class Board(Frame):
+    '''GUI implementation of Tic-Tac-Toe'''
+    def __init__(self, master) -> None:
+        super(Board, self).__init__(master)
+        self.grid()
+        self.buttons = []
+        self.create_widgets()
+        
+        self.ticTacToe = game()
+        self.ResetGame()
+
+    def ResetGame(self):
+        # reset the available moves and the selected moves so far...
+        self.available = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        self.selectedMoves = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        # remembers move sequence of the game
+        self.gameMoves = []
+
+   
+    def checkWinner(self):
+        win = False
+        row1 = (self.selectedMoves[0], self.selectedMoves[1], self.selectedMoves[2])
+        row2 = (self.selectedMoves[3], self.selectedMoves[4], self.selectedMoves[5])
+        row3 = (self.selectedMoves[6], self.selectedMoves[7], self.selectedMoves[8])
+        col1 = (self.selectedMoves[0], self.selectedMoves[3], self.selectedMoves[6])
+        col2 = (self.selectedMoves[1], self.selectedMoves[4], self.selectedMoves[7])
+        col3 = (self.selectedMoves[2], self.selectedMoves[5], self.selectedMoves[8])
+        diag1 = (self.selectedMoves[0], self.selectedMoves[4], self.selectedMoves[8])
+        diag2 = (self.selectedMoves[2], self.selectedMoves[4], self.selectedMoves[6])
+        winLines = [row1, row2, row3, col1, col2, col3, diag1, diag2]
+        
+        while win == False:
+            for each in winLines:
+                if not ' ' in each:
+                    if each[0] == each[1] == each[2]:
+                        win = True
+                        break
+            #default break if no winline found
+            break
+
+        return win 
+
+
+    def button_press(self, btn):
+        print(f'button pressed {btn}')
+        # update the text on button when button is pressed.  use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
+
+        # play HUMAN turn
+        #check if tile is vaccant else return without doing anything
+        if self.buttons[btn-1]['text'] != '':
+            return      
+        else:
+            # update available and game arrays
+            self.gameMoves.append(str(btn))
+            self.available.remove(str(btn))
+
+            self.selectedMoves[btn-1] = self.HUMAN 
+
+            # update btn txt wit HUMAN character
+            self.buttons[btn-1]['text'] = self.HUMAN
+            
+            # check if win
+            gameOver = self.checkWinner()   # checkWinner returns TRUE if last move was a winning move
+            if  gameOver:
+                winner = True
+
+                print('HUMAN won')
+                #TODO GameOver: assign buttons to do nothing if clicked
+                self.p1.gameStats("HUMAN", '\twin')
+                return
+
+            # check if draw
+            if len(self.gameMoves) > 8:
+                print("We have a draw!!")
+                self.p1.gameStats("HUMAN", '\tdraw')
+                return    
+
+            else:
+                print(f'no winner yet, gameMoves: {self.gameMoves} , and selectedMoves: {self.selectedMoves} ')
+                #play COMPUTER turn
+                # get suggested move from Brain
+                select = self.p1.SuggestMove(self.gameMoves)
+                print(type(select))
+                # check we have found an available tile
+                #if select not in self.available:
+                    #get a random square from avaialable
+                    #select = choice(self.available)
+
+                self.gameMoves.append(select)
+                self.available.remove(select)
+
+                self.selectedMoves[int(select)-1] = self.COMPUTER
+                # update btn with COMPUTER  char
+                self.buttons[int(select)-1]['text'] = self.COMPUTER
+                # check if win
+                gameOver = self.checkWinner()   # checkWinner returns TRUE if last move was a winning move
+                if  gameOver:
+                    winner = True
+                    print('COMPUTER won')
+                    #TODO GameOver: assign buttons to do nothing if clicked
+                    self.p1.gameStats("COMPUTER", '\twin')
+                    return
+
+                # check if draw
+                if len(self.gameMoves) > 8:
+                    print("We have a draw!!")
+                    self.p1.gameStats("COMPUTER", '\tdraw')
+                    return  
+
+            #if WINNER
+                #learn game moves 
+                #NOTE i could learn moves when window is closed - back in main prog.
+
+
+
+    def create_widgets(self):
+        '''create button and text widgets'''
+        #create welcome label
+        self.welcome_lbl = Label(self, text="Welcome to Tic-Tac-Toe")
+        self.welcome_lbl.grid(row=0, column=0, columnspan=3, sticky=W)
+
+        # create buttons
+        count=0
+        for r in range(3):
+            for c in range(3):
+                count += 1
+                self.buttons.append(Button(self, text='', width=14, height=6, bg="blue", fg="yellow", relief=GROOVE, command=lambda x=count: self.button_press(x)))
+                self.buttons[-1].grid(row=r+1, column=c)
+
+
+
+def main():
+    root = Tk()
+    root.title('Tic-Tac-Toe')
+
+    myGUI = Board(root)
+    root.mainloop()
+
+    #######test
+
+    myGUI.ticTacToe.play_move()
+    myGUI.ticTacToe.play_move('6')
+
+   # after games have ended, save Brain to file:
+   #TODO 
+
+
+if __name__ == '__main__':
+    main()

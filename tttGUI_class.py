@@ -2,7 +2,6 @@
 
 from tkinter import *
 from Brain_class import Brain 
-from random import choice
 
 
 class tttGUI(Frame):
