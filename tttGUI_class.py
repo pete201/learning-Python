@@ -93,13 +93,13 @@ class tttGUI(Frame):
 
                 print('HUMAN won')
                 #TODO GameOver: assign buttons to do nothing if clicked
-                self.p1.gameStats("HUMAN", self.gameMoves)
+                self.p1.gameStats("HUMAN", '\twin')
                 return
 
             # check if draw
             if len(self.gameMoves) > 8:
                 print("We have a draw!!")
-                self.p1.gameStats("HUMAN", self.gameMoves)
+                self.p1.gameStats("HUMAN", '\tdraw')
                 return    
 
             else:
@@ -125,13 +125,13 @@ class tttGUI(Frame):
                     winner = True
                     print('COMPUTER won')
                     #TODO GameOver: assign buttons to do nothing if clicked
-                    self.p1.gameStats("COMPUTER", self.gameMoves)
+                    self.p1.gameStats("COMPUTER", '\twin')
                     return
 
                 # check if draw
                 if len(self.gameMoves) > 8:
                     print("We have a draw!!")
-                    self.p1.gameStats("COMPUTER", self.gameMoves)
+                    self.p1.gameStats("COMPUTER", '\tdraw')
                     return  
 
             #if WINNER
