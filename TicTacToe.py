@@ -14,13 +14,13 @@ class player():
             self.brain = Brain('Brian')
             
 
-
 class game():
     def __init__(self) -> None:
         self.player1 = player('HUMAN','X')
         self.player2 = player('COMPUTER','O')
         self.current_player = self.player1
         self.ResetGame()
+
 
     def switch_turn(self):
         if self.current_player == self.player1:
@@ -55,11 +55,6 @@ class game():
             '''no tile number required for COMPUTER turn'''
             # get suggested move from Brain
             tile_number = self.player2.brain.SuggestMove(self.gameMoves)
-            # check we have found an available tile
-            #if select not in self.available:
-                #get a random square from avaialable
-                #select = choice(self.available)
-            # use btn-1 for array index (0-8) since btn numbers are 1-9 (to maintain Brain functionality)
         # update available and game arrays
         self.gameMoves.append(str(tile_number))
         self.available.remove(str(tile_number))
@@ -68,6 +63,7 @@ class game():
         winner = self.checkWinner()
         if winner:
             print(self.current_player.token,"wins !!!")
+            self.player2.brain.Learn8from1(self.gameMoves)
             return 'WINNER'
 
         # check if draw
@@ -78,7 +74,6 @@ class game():
         else:
             return 'PLAY-ON'
       
-
 
     def checkWinner(self):
         win = False
@@ -112,15 +107,13 @@ class Board(Frame):
         self.buttons = []
         self.create_widgets()
         
-        self.ticTacToe = game()
+        self.ticTacToe = game()     # tk can access game logic functions
         self.gameState = 'PLAY-ON'  # possible values are 'PLAY-ON', 'WINNER', 'DRAW'
-        #TODO - put these valid stated in a special array
 
 
     def button_press(self, btn):
         print(f'button pressed: {btn}')
         # update the text on button when button is pressed.  use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
-
         # play HUMAN turn
         #check if tile is vaccant else return without doing anything
         if self.gameState == 'PLAY-ON':
@@ -138,34 +131,20 @@ class Board(Frame):
             else:
                 return
         else:
-            # if a button is pressed when game-over, restart game
+            # if a button is pressed when game-over, restart game and reset board
             self.ticTacToe.ResetGame()
             self.ticTacToe.swap_who_goes_first()
-            ####################################################
-            # this resets game logic, but does not redraw board!!
-            # see same block below
             for tile in range(9):
                 self.buttons[tile]['text'] = ''
             self.gameState = 'PLAY-ON'
-            #return
-
-
 
         if self.gameState == 'PLAY-ON' and self.ticTacToe.current_player.genus == 'COMPUTER':
             self.gameState = self.ticTacToe.play_move()  # no value passed for player.genus = COMPUTER
-            # update btn with COMPUTER  char 
-            # I need to get tile_number from last play_move... which is the last entry in gameMoves[]
+            # update btn with COMPUTER token
+            # get tile_number from last play_move... which is the last entry in gameMoves[]
             self.buttons[int(self.ticTacToe.gameMoves[-1])-1]['text'] = self.ticTacToe.current_player.token # get tile from last gameMoves[] stored
             self.ticTacToe.switch_turn()
-        # else:
-        #     # if a button is pressed when game-over, restart game
-        #     self.ticTacToe.ResetGame()
-        #     self.ticTacToe.swap_who_goes_first()
-        #     for tile in range(9):
-        #         self.buttons[tile]['text'] = ''
-        #     self.gameState = 'PLAY-ON'
 
-            
 
     def create_widgets(self):
         '''create button and text widgets'''
@@ -184,19 +163,17 @@ class Board(Frame):
 
 
 def main():
+
     root = Tk()
     root.title('Tic-Tac-Toe')
 
     myGUI = Board(root)
     root.mainloop()
 
-    #######test
-
-    myGUI.ticTacToe.play_move()
-    myGUI.ticTacToe.play_move('6')
-
-   # after games have ended, save Brain to file:
-   #TODO 
+    # after games have ended, save Brain to file:
+    print('Saving brain to file, please wait...')
+    myGUI.ticTacToe.player2.brain.Save()
+   
 
 
 if __name__ == '__main__':
