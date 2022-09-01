@@ -67,7 +67,7 @@ class game():
 
         winner = self.checkWinner()
         if winner:
-            print(self.current_player,"wins !!!")
+            print(self.current_player.token,"wins !!!")
             return 'WINNER'
 
         # check if draw
@@ -123,18 +123,16 @@ class Board(Frame):
 
         # play HUMAN turn
         #check if tile is vaccant else return without doing anything
-        if self.buttons[btn-1]['text'] != '':
-            return      
-        elif self.gameState == 'PLAY-ON':
+        if self.buttons[btn-1]['text'] == '' and self.gameState == 'PLAY-ON':    
             # update btn txt wit player character
             self.buttons[btn-1]['text'] = self.ticTacToe.current_player.token
-            self.gameState = self.ticTacToe.play_move(btn) #WARNING TODO may need to be btn-1  
+            self.gameState = self.ticTacToe.play_move(btn) 
         else:
             return        
 #################################################
 # on retun from play we can get:
-# we have a WINNER
-# we have a DRAW
+# WINNER
+# DRAW
 # PLAY-ON
 #################################################
 
@@ -150,7 +148,8 @@ class Board(Frame):
             #self.buttons[int(self.ticTacToe.current_player)-1]['text'] = self.ticTacToe.current_player.token
             self.buttons[int(self.ticTacToe.gameMoves[-1])-1]['text'] = self.ticTacToe.current_player.token # get tile from last gameMoves[] stored
 
-        # check if win
+        if self.gameState == 'PLAY-ON':
+            self.ticTacToe.switch_turn()
             
 
     def create_widgets(self):
