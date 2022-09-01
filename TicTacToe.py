@@ -118,38 +118,53 @@ class Board(Frame):
 
 
     def button_press(self, btn):
-        print(f'button pressed {btn}')
+        print(f'button pressed: {btn}')
         # update the text on button when button is pressed.  use btn-1 since array index is 0-8 and btn numbers are 1-9 (to maintain Brain functionality)
 
         # play HUMAN turn
         #check if tile is vaccant else return without doing anything
-        if self.buttons[btn-1]['text'] == '' and self.gameState == 'PLAY-ON':    
-            # update btn txt wit player character
-            self.buttons[btn-1]['text'] = self.ticTacToe.current_player.token
-            self.gameState = self.ticTacToe.play_move(btn) 
+        if self.gameState == 'PLAY-ON':
+            if self.buttons[btn-1]['text'] == '':
+                # update btn txt wit player character
+                self.buttons[btn-1]['text'] = self.ticTacToe.current_player.token
+                self.gameState = self.ticTacToe.play_move(btn) 
+                #################################################
+                # on retun from play we can get:
+                # WINNER
+                # DRAW
+                # PLAY-ON
+                #################################################
+                self.ticTacToe.switch_turn()
+            else:
+                return
         else:
-            return        
-#################################################
-# on retun from play we can get:
-# WINNER
-# DRAW
-# PLAY-ON
-#################################################
+            # if a button is pressed when game-over, restart game
+            self.ticTacToe.ResetGame()
+            self.ticTacToe.swap_who_goes_first()
+            ####################################################
+            # this resets game logic, but does not redraw board!!
+            # see same block below
+            for tile in range(9):
+                self.buttons[tile]['text'] = ''
+            self.gameState = 'PLAY-ON'
+            #return
 
-        if self.gameState == 'PLAY-ON':
-            self.ticTacToe.switch_turn()
-            # check genus of current_player 
+
+
+        if self.gameState == 'PLAY-ON' and self.ticTacToe.current_player.genus == 'COMPUTER':
             self.gameState = self.ticTacToe.play_move()  # no value passed for player.genus = COMPUTER
-            # update btn with COMPUTER  char
-
-        ############### ERROR HERE - self.tictactoe.current_player is not an INT !!!  
-        # I need to return tile_number from play_move
-        # which is the last entry in 
-            #self.buttons[int(self.ticTacToe.current_player)-1]['text'] = self.ticTacToe.current_player.token
+            # update btn with COMPUTER  char 
+            # I need to get tile_number from last play_move... which is the last entry in gameMoves[]
             self.buttons[int(self.ticTacToe.gameMoves[-1])-1]['text'] = self.ticTacToe.current_player.token # get tile from last gameMoves[] stored
-
-        if self.gameState == 'PLAY-ON':
             self.ticTacToe.switch_turn()
+        # else:
+        #     # if a button is pressed when game-over, restart game
+        #     self.ticTacToe.ResetGame()
+        #     self.ticTacToe.swap_who_goes_first()
+        #     for tile in range(9):
+        #         self.buttons[tile]['text'] = ''
+        #     self.gameState = 'PLAY-ON'
+
             
 
     def create_widgets(self):
