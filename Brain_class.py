@@ -1,6 +1,6 @@
-# class to set up memory locations for every permutation of tic tac toe
-# memory locations will be populated vlaues indicating likelihood of winning move
-# if a move is a winning move, +1, if it's a losing move -1, for a draw do nothing
+""" class to set up memory locations for every permutation of tic tac toe
+memory locations will be populated vlaues indicating likelihood of winning move
+if a move is a winning move, +1, if it's a losing move -1, for a draw do nothing """
 
 import json
 
@@ -12,16 +12,19 @@ class Brain(object):
     winning games update memory'''
 
     # class attributes - common across all instances
-    ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8', '9']   # represents the 9 spaces on tic tac toe grid
+    ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8', '9']   
+    # represents the 9 spaces on tic tac toe grid
     #ticTacToeGrid = ['1', '2', '3']  # small list for testing only
 
     # constructor: see if file exists, if not create a new empty brain
     def __init__(self, playername):
         # instance attributes - particular to this instance
-        self.logfilename = playername + '.csv'              # each instance has a game stats log file, updated in def gameStats
-        self.filename = playername + '.dat'             # each instance has a separate storage file
+        # each instance has a game stats log file, updated in def gameStats...
+        self.logfilename = playername + '.csv'
+        # each instance has a separate storage file...
+        self.filename = playername + '.dat'             
         try:
-            # TODO consider doing a sanity check on file (e.g. sizeof) to ensure it's what we expect
+            # TODO consider a sanity check on file (e.g. sizeof) to ensure it's what we expect
             self.f = open(self.filename, 'rb')
             print('Brain.init: found file ', self.filename)
             # read in Brain dictionary from file
@@ -32,7 +35,8 @@ class Brain(object):
             print(f'file "{self.filename}" not found')
             print('Brain.init: building BrainDictionary')
             # create a new empty brain dictionary,
-            # first establish List with initial dictionary from Grid (i.e. the suggestion values for first move)
+            # first establish List with initial dictionary from Grid 
+            # (i.e. the suggestion values for first move)
             self.brainDictionary = [dict.fromkeys(Brain.ticTacToeGrid,0)]
 
             #now pass this dictionary to BuildNestedDictionary n times where n = len(GRID)-1
@@ -54,7 +58,8 @@ class Brain(object):
     def gameStats(self, player, result):
         # try to open logfile to see if it exists
         try:
-            logf = open(self.logfilename, 'a') # this will create logfile if it does not already exist and append to end of file
+            # create logfile if it does not already exist and append to end of file
+            logf = open(self.logfilename, 'a')
             logEntry = str(player) + ',' + result + '\n'
             logf.write(logEntry)
             logf.close()
@@ -66,11 +71,13 @@ class Brain(object):
         returnDict = {}
         for input_key, input_value in input_dict.items():
             #print('BuildNestedDict: type(element)', type(input_value))
-            if type(input_value) is dict:   # if it's a nested dictionary, then recursive call.  If not, then we work on input dictionary
+            # if it's a nested dictionary, then recursive call, else work on input dictionary
+            if type(input_value) is dict:   
                 returnDict[input_key] = self.BuildNestedDict(input_value)
             else:
                 # we get here if type NOT dictionary
-                valsList = list(input_dict.keys())   # create a list of the keys in innermost dictionary so far
+                # create a list of the keys in innermost dictionary so far
+                valsList = list(input_dict.keys())
                 for key in valsList:
                     shortList = valsList[:]
                     shortList.remove(key)
@@ -83,9 +90,9 @@ class Brain(object):
     def LearnMoves(self, moveList):
         '''input moveList, fill in AI dictionary based on winning moves'''
         # learn from game_result
-        #print('Brain.LearnMoves: ', moveList)
         # working backwards from winning move, result is +1, -1, +1, -1... until beginning
-        # so if number of moves is ODD then first move was WINNER, and if EVEN then first move was a LOSER
+        # so if number of moves is ODD then first move was WINNER, 
+        # and if EVEN then first move was a LOSER
         # A number is even if division by 2 gives a remainder of 0.
         # If the remainder is 1, it is an odd number.
         winningMoveScore = 1
@@ -196,16 +203,16 @@ class Brain(object):
             print('Learning game derivative:', moveList)
             self.LearnMoves(moveList)
 
-
-    # TODO destructor: __del__ make sure files are closed before exiting - beware not to break default action
+    # TODO destructor: __del__ ensure files are closed before exiting - don't break default action
 
 def main():
     p1 = Brain('player1')
 
-    # write a get_best_move method that looks up highest number from sorted list given stack (game moves so far)
-    #print(p1[0])
+    # write a get_best_move method that looks up highest number from sorted list given stack
+    #  (game moves so far)
 
-    # TEST gamemoves.  gamemoves is a list which is passed to 'LearnMoves' which stores them in the List of Dictionaries
+    # gamemoves is a list which is passed to 'LearnMoves' 
+    # which stores them in the List of Dictionaries
     gamemoves = ['1', '2', '4', '6', '7']
     p1.LearnMoves(gamemoves)
 
@@ -222,4 +229,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
