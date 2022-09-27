@@ -20,7 +20,7 @@ class Brain(object):
         # instance attributes - particular to this instance
         self.logfilename = playername + '.csv'              # each instance has a game stats log file, updated in def gameStats
         self.filename = playername + '.dat'             # each instance has a separate storage file
-        try: 
+        try:
             # TODO consider doing a sanity check on file (e.g. sizeof) to ensure it's what we expect
             self.f = open(self.filename, 'rb')
             print('Brain.init: found file ', self.filename)
@@ -44,7 +44,7 @@ class Brain(object):
 
             #TODO the below count does not work now that the overall brain is a list...
             #print('number of boxes is:',sum(len(v) for v in self.brainDictionary.values()))
-            
+
             # store dictionary into 'filename'
             self.f = open(self.filename, 'w')
             json.dump(self.brainDictionary, self.f)
@@ -53,14 +53,14 @@ class Brain(object):
 
     def gameStats(self, player, result):
         # try to open logfile to see if it exists
-        try: 
+        try:
             logf = open(self.logfilename, 'a') # this will create logfile if it does not already exist and append to end of file
             logEntry = str(player) + ',' + result + '\n'
             logf.write(logEntry)
             logf.close()
-            print(f'file "{self.logfilename}" updated with {logEntry}')  
+            print(f'file "{self.logfilename}" updated with {logEntry}')
         except:
-            print(f'file "{self.logfilename}" not found')        
+            print(f'file "{self.logfilename}" not found')
 
     def BuildNestedDict(self, input_dict):
         returnDict = {}
@@ -71,10 +71,10 @@ class Brain(object):
             else:
                 # we get here if type NOT dictionary
                 valsList = list(input_dict.keys())   # create a list of the keys in innermost dictionary so far
-                for key in valsList: 
+                for key in valsList:
                     shortList = valsList[:]
                     shortList.remove(key)
-                    returnDict[key] = dict.fromkeys(shortList,0) 
+                    returnDict[key] = dict.fromkeys(shortList,0)
 
         #print('BuildNestedDict: returnDict:', returnDict)
         return returnDict
@@ -90,7 +90,7 @@ class Brain(object):
         # If the remainder is 1, it is an odd number.
         winningMoveScore = 1
         losingMoveScore = -1
-        if len(moveList)%2 ==0: 
+        if len(moveList)%2 ==0:
             score = losingMoveScore
         else:
             score = winningMoveScore
@@ -101,7 +101,7 @@ class Brain(object):
         # etc...
         for i,move in enumerate(moveList) :
             # format is [List[dict[dict]]] so [int][str][str]...
-            # first we get the dictionary corresponding to the move number 
+            # first we get the dictionary corresponding to the move number
             gamePosn = self.brainDictionary[i]
 
             #then from this dictionary, we need to pull sucessive dictionaries
@@ -127,15 +127,15 @@ class Brain(object):
         json.dump(self.brainDictionary, self.f)
         self.f.close()
         print(f'Brain.LearnMoves: file {self.filename} updated')
-        
+
     def SuggestMove(self, moveList):
         '''from moves so far, looks up stored results and finds higest ranking move'''
-        
+
         print('Brain.SuggestMove: game so far', moveList)
         if moveList == []:
             print('movelist is empty')
         # format is [List[dict[dict]]] so [int][str][str]...
-        # first we get the dictionary corresponding to the move number 
+        # first we get the dictionary corresponding to the move number
         gamePosn = self.brainDictionary[len(moveList)]
 
         for move in moveList:
@@ -146,7 +146,7 @@ class Brain(object):
         suggestion = max(gamePosn, key=gamePosn.get)
         print('my suggestion is ',suggestion)
         return suggestion
-    
+
     def Rotate(self, moveList):
         '''takes tic-tac-toe tile position and rotates tic-tac-toe grid once clockwise'''
         ticTacToeGrid = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -178,7 +178,7 @@ class Brain(object):
         # Learn original game
         print('Learning original game:', moveList)
         self.LearnMoves(moveList)
-        
+
         # rotate game 3 times and learn each...
         for n in range(3):
             moveList = self.Rotate(moveList)
@@ -222,3 +222,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    
