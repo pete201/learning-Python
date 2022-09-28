@@ -20,4 +20,4 @@ jobs:
         pip install pylint
     - name: Analysing the code with pylint # original = pylint --disable=C,R $(git ls-files '*.py')
       run: |
-        pylint --disable=C,R TicTacToe.py Brain_class.py
+        pylint --disable=C,R,W0511 TicTacToe.py Brain_class.py
