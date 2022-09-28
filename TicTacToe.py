@@ -1,6 +1,6 @@
 # class to hold tic tac toe board
 
-from tkinter import *
+from tkinter import Frame, Tk, Label, Button, W, GROOVE
 from Brain_class import Brain 
 
 
@@ -52,7 +52,7 @@ class game():
     def play_move(self, tile_number = None):
         '''if a tile number is passed, play that, otherwise look up suggestion from Brain'''
         if tile_number == None: # indicates COMPUTER player
-            '''no tile number required for COMPUTER turn'''
+            # no tile number required for COMPUTER turn
             # get suggested move from Brain
             tile_number = self.player2.brain.SuggestMove(self.gameMoves)
         # update available and game arrays

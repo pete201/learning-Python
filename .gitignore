@@ -10,3 +10,4 @@ player2.csv
 .vscode/launch.json
 __pycache__/Brain_class.cpython-310.pyc
 __pycache__/tttGUI_class.cpython-310.pyc
+Brian.dat
