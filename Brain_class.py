@@ -24,7 +24,7 @@ class Brain():
         # each instance has a separate storage file...
         self.filename = playername + '.dat'
         try:
-            # TODO consider a sanity check on file (e.g. sizeof) to ensure it's what we expect
+            # TODO: consider a sanity check on file (e.g. sizeof) to ensure it's what we expect
             self.f = open(self.filename, 'rb')
             print('Brain.init: found file ', self.filename)
             # read in Brain dictionary from file
@@ -46,7 +46,7 @@ class Brain():
             #print('Brain__init__: self.brainDictionary:', self.brainDictionary)
             print('length of dictionary is', len(self.brainDictionary))
 
-            #TODO the below count does not work now that the overall brain is a list...
+            # TODO: the below count does not work now that the overall brain is a list...
             #print('number of boxes is:',sum(len(v) for v in self.brainDictionary.values()))
 
             # store dictionary into 'filename'
@@ -206,7 +206,7 @@ class Brain():
             print('Learning game derivative:', moveList)
             self.LearnMoves(moveList)
 
-    # TODO destructor: __del__ ensure files are closed before exiting - don't break default action
+    # TODO: destructor: __del__ ensure files are closed before exiting - don't break default action
 
 def main():
     '''used to test Brain file creation and look up'''
